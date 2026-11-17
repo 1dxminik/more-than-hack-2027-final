@@ -9,5 +9,12 @@ Przed udostępnieniem tej alternatywnej metody należy:
 5. Opisać wyniki, regresje i ograniczenia porównań na znanych meczach IDSSE.
 6. Wyraźnie oddzielić C5 jako alternatywę od głównego rozwiązania zgłoszeniowego.
 7. Sprawdzić kod na syntetyce oraz przejrzeć pliki przeznaczone do publikacji.
+8. Przenieść szkielet na gałąź opartą na właściwym `main`, bez zmiany
+   rozwiązania odtwarzającego już zgłoszony CSV kolegi.
 
 Nie deklarujemy wykonania tych czynności na podstawie samego szkieletu.
+
+- [Docelowa struktura](STRUKTURA.md).
+- [Relacja gałęzi do zgłoszenia](GALAZ-I-ZGLOSZENIE.md).
+- [Plan reprodukcji](REPRODUKCJA.md).
+- [Opis metody](../TECHNICAL_REPORT.md).

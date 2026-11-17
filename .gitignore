@@ -21,12 +21,20 @@ __pycache__/
 !/data/README.md
 /models/*
 !/models/README.md
+/weights/**
+!/weights/c5-alpha-0.1/
+!/weights/c5-alpha-0.1/README.md
 /outputs/*
 !/outputs/README.md
 
 # Pliki danych i artefaktów, także poza katalogami lokalnymi
 *.csv
 *.tsv
+*.parquet
+*.h5
+*.hdf5
+*.arrow
+*.feather
 *.jsonl
 *.npz
 *.npy
@@ -47,3 +55,12 @@ __pycache__/
 *.avi
 *.mkv
 *.atd
+*.xml
+*.txt
+!requirements.txt
+!requirements-nn.txt
+!requirements-v3.txt
+/private/
+/datasets/
+/checkpoints/
+/submissions/
