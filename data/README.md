@@ -1,8 +1,9 @@
-# Wejścia lokalne
+# Local inputs
 
-`phase1.py demo` i `improve` tworzą niezależną syntetykę w `synthetic-c5/<run>/`.
-Manifest zawiera rodzaj danych i hashe. Nie czytają meczu konkursowego
-ani zewnętrznego katalogu wskazanego w środowisku.
+`phase1.py demo` and `improve` create independent synthetic data in
+`synthetic-c5/<run>/`. The manifest records the data type and hashes.
+These commands do not read the competition match or an external directory
+specified through the environment.
 
-Finalny operator przekazuje eksporterowi jawne XML/TXT poza repo.
-Wejścia nie trafiają do Git ani usług AI.
+The operator supplies explicit XML/TXT paths outside the repository.
+Inputs must remain outside Git and AI services.

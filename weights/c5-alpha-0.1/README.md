@@ -1,13 +1,15 @@
-# Lokalne zasoby C5-alpha-0.1
+# Local C5-alpha-0.1 model assets
 
-Wymagane jest dokładnie siedem plików z `configs/assets.json`:
-pięć `tcn_*.npz`, `linear.json` pełnego N14 i `meta.npz` dla alpha=0,1.
-Manifest zawiera role, rozmiary, SHA-256 i nazwy członków pakietu źródłowego.
-Runtime sprawdza komplet przed wczytaniem.
+Exactly seven files listed in `configs/assets.json` are required:
+five `tcn_*.npz` checkpoints, `linear.json` for full N14 and `meta.npz`
+for alpha=0.1. The manifest records their roles, sizes, SHA-256 hashes and
+member names in the source package. The runtime verifies the complete set
+before loading it.
 
-Instalacja: `python -m scripts.install_assets --from-package SCIEZKA_PAKIETU`.
-Można wskazać lokalny `code-and-weights.zip` albo jego rozpakowany katalog kodu.
-Kopiowane są tylko wymagane modele, bez danych, wyników i CSV.
+Install with `python -m scripts.install_assets --from-package PACKAGE_PATH`.
+Supply the local `code-and-weights.zip` or its extracted code directory.
+Only the required model assets are copied, without data, outputs or CSVs.
 
-Modele są dostępne lokalnie do testów tej gałęzi i ignorowane przez Git.
-Klon gałęzi wymaga osobnego dostarczenia pakietu. Wag nie opublikowano.
+The models are available locally for testing this branch and are ignored by Git.
+Cloning the branch requires the package to be supplied separately.
+The weights have not been published.
