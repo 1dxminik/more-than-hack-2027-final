@@ -3,25 +3,48 @@
 TCN + full N14 + C5 decoder. This is an additional method developed by the team;
 the CSV submitted through the competition form comes from our teammate's model.
 This branch does not replace that submission. It contains no match data or
-competition CSVs. Model weights remain local and outside Git.
+competition CSVs. Model weights are distributed separately through the
+[C5 weights release](https://github.com/1dxminik/more-than-hack-2027-final/releases/tag/c5-alpha-0.1-weights-v1)
+and remain outside Git history.
 
 ## Installation
 
 Reference environment: Windows, Python 3.12.14, PyTorch 2.8.0+cpu,
-two CPU threads. Run from the repository root using a Python 3.12 interpreter:
+two CPU threads. Start with a fresh clone of this branch:
+
+```powershell
+git clone --branch c5-alpha-0.1 --single-branch `
+    https://github.com/1dxminik/more-than-hack-2027-final.git more-than-hack-2027-c5
+Set-Location more-than-hack-2027-c5
+```
+
+From the repository root, create the environment and download the versioned
+weights archive. Use a Python 3.12 interpreter:
 
 ```powershell
 .\setup.ps1 -Python python
+New-Item -ItemType Directory -Force .cache | Out-Null
+$archive = '.cache\c5-alpha-0.1-weights-v1.zip'
+Invoke-WebRequest -UseBasicParsing `
+    -Uri 'https://github.com/1dxminik/more-than-hack-2027-final/releases/download/c5-alpha-0.1-weights-v1/c5-alpha-0.1-weights-v1.zip' `
+    -OutFile $archive
+$expectedHash = '9794366fae14fc32065975d147efb17816dbd23ee696a51d0460ebda5c2c23e7'
+if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expectedHash) {
+    throw 'C5 release archive hash mismatch'
+}
 .\.venv\Scripts\python.exe -s -X utf8 -m scripts.install_assets `
-    --from-package 'D:\path\to\code-and-weights.zip'
+    --from-package $archive
+if ($LASTEXITCODE -ne 0) { throw 'C5 model asset installation failed' }
 ```
 
-The package is the local C5 code-and-weights archive or its extracted `code/`
-directory. The installer reads only the seven model assets listed in
+The public archive contains exactly seven model files plus a manifest, checksums
+and model card. Its size is 726,575 bytes. A separate `.sha256` file is available
+on the release page. The installer reads only the seven model assets listed in
 `configs/assets.json` and verifies their sizes and SHA-256 hashes. It does not
 copy data, CSVs, logs or caches. The six checkpoints in our teammate's
 `weights/tcn_v1/` belong to a different architecture and cannot be used here.
-Cloning this branch alone requires the local model package to be supplied separately.
+No private model package or retraining is required after cloning this branch.
+The installer also accepts the original local C5 package or its extracted code directory.
 
 `setup.ps1` creates an isolated venv without inherited packages, installs pinned
 CPU dependencies and runs `pip check`. On Linux, use a Python 3.12 venv and
