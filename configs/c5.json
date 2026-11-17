@@ -1,0 +1,49 @@
+{
+  "fps": 25.0,
+  "frames": 199319,
+  "n14_flags": {
+    "anchored_restart": true,
+    "bounded_stationary_support": true,
+    "causal_dead": true,
+    "dead_control_arbitration": true,
+    "gap_D": true,
+    "gap_HA": true,
+    "intermittent_HA": true,
+    "nearby_gap_recovery": true,
+    "nearby_strength_arbitration": true,
+    "none_recovery": true,
+    "owner_evidence_arbitration": true,
+    "recovery_completed_guard": true,
+    "suffix": false,
+    "supported_dead_backdating": true,
+    "supported_owner_control": true,
+    "unowned_D": true
+  },
+  "periods": [
+    [
+      11185,
+      90652
+    ],
+    [
+      110808,
+      190198
+    ]
+  ],
+  "pitch_m": [
+    105.3,
+    68.0
+  ],
+  "schema_version": 1,
+  "threads": 2,
+  "torch_version": "2.8.0+cpu",
+  "variant": {
+    "alpha": 0.1,
+    "guard": true,
+    "min_D_len": 40,
+    "name": "C5-alpha-0.1",
+    "stage": 2,
+    "strong": 6.0,
+    "tier": false,
+    "weak": 6.0
+  }
+}

@@ -1,19 +1,22 @@
-# Źródła i licencje — stan szkieletu
+# Pochodzenie i licencje
 
-Układ repo wzorowano na `1dxminik/more-than-hack-2027-final`, commit
-`994b124c8c78036307faa915f08d59943bba52c6`. Nie przeniesiono jego kodu
-ani checkpointów; model kolegi i C5 wymagają innych zasobów.
+C5/N14 pochodzi z lokalnego projektu MoreThanHack, commit
+`d99253c24e739735510f76be40f1adaaafe39344`.
+Hashe źródeł i opis migracji są w `SOURCE_MANIFEST.json`.
+Nie nadano tu nowej licencji na autorski kod lub wagi; jej ustalenie
+i publiczne udostępnienie zasobów wymagają osobnej decyzji.
 
-Źródło przyszłego przeniesienia C5: commit
-`d99253c24e739735510f76be40f1adaaafe39344` lokalnego projektu MoreThanHack.
+`official/` jest niezmienioną wybraną kopią publicznego kodu Metrica Sports
+More Than a Hack 2027, wersja `f8f2629ff1e0985f81d7e59d8413678514ee1530`.
+Zachowano [MIT](official/LICENSE) i [UPSTREAM.json](official/UPSTREAM.json).
+Licencja publicznego kodu nie obejmuje materiałów konkursowych.
 
-Przed przeniesieniem i publikacją należy:
+Źródło historycznego treningu TCN i meta-modelu: IDSSE, Bassek i in.,
+Scientific Data 2025, DOI 10.1038/s41597-025-04505-y, właściciel DFL,
+publiczne lustro `pysport/idsse-data`, CC BY 4.0. Zbioru nie rozprowadzamy.
+Linear N14 jest zamrożonym modelem syntetycznym.
 
-- zachować oryginalny `official/`, MIT i `UPSTREAM.json` z właściwej wersji;
-- sprawdzić licencję oraz atrybucję IDSSE i pochodzenie wszystkich wag;
-- zachować wymagane informacje o bibliotekach i zapożyczonych komponentach;
-- ustalić licencję własnego kodu oraz sposób udostępnienia wag.
-
-W tym szkielecie nie ma kodu upstreamu ani wymaganych wag. Licencja publicznego
-kodu nie obejmuje prywatnych materiałów konkursowych. Nie przyjmujemy, że
-publikacja wag kolegi stanowi zgodę na publikację wag C5.
+Zależności: PyTorch, NumPy i pandas (BSD-3-Clause), python-dateutil
+(Apache-2.0/BSD-3-Clause), six (MIT), tzdata (Apache-2.0 oraz informacje
+bazy IANA). Pozostałe pakiety zachowują własne licencje i są przypięte
+w `requirements-nn.txt`.

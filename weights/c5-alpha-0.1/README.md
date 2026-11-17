@@ -1,10 +1,13 @@
-# Zasoby C5-alpha-0.1 — do przeniesienia
+# Lokalne zasoby C5-alpha-0.1
 
-Docelowo osobny zestaw pięciu checkpointów TCN B+CE, zamrożony model Linear
-pełnego N14, meta-model dla alpha=0,10 i związane z nimi normalizacje oraz
-konfiguracje. Dokładną listę i hashe należy ustalić z manifestu źródłowego.
-Nie są to checkpointy `weights/tcn_v1/` z głównego modelu kolegi.
+Wymagane jest dokładnie siedem plików z `configs/assets.json`:
+pięć `tcn_*.npz`, `linear.json` pełnego N14 i `meta.npz` dla alpha=0,1.
+Manifest zawiera role, rozmiary, SHA-256 i nazwy członków pakietu źródłowego.
+Runtime sprawdza komplet przed wczytaniem.
 
-Katalog zawiera wyłącznie ten opis. Wagi pozostają lokalnie poza historią Git.
-Nie utworzono SHA256SUMS z wymyślonymi wartościami ani manifestu odbioru.
-Sposób dostępu organizatorów do potrzebnych wag wymaga osobnego ustalenia.
+Instalacja: `python -m scripts.install_assets --from-package SCIEZKA_PAKIETU`.
+Można wskazać lokalny `code-and-weights.zip` albo jego rozpakowany katalog kodu.
+Kopiowane są tylko wymagane modele, bez danych, wyników i CSV.
+
+Modele są dostępne lokalnie do testów tej gałęzi i ignorowane przez Git.
+Klon gałęzi wymaga osobnego dostarczenia pakietu. Wag nie opublikowano.

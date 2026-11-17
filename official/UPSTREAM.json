@@ -1,0 +1,76 @@
+{
+  "repository": "https://github.com/metrica-sports/more-than-a-hack-2027",
+  "commit": "f8f2629ff1e0985f81d7e59d8413678514ee1530",
+  "retrieved_on": "2026-10-27",
+  "scope": "Selected public source and documentation only. No match assets, public GT, or upstream prediction CSVs included.",
+  "files": {
+    "README.md": {
+      "git_blob_sha1": "2d30a8a3848f0ed5c38536caa66f4c2b411b4156",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/README.md"
+    },
+    "LICENSE": {
+      "git_blob_sha1": "d9330daa5cb9bd8c01412b938e5c15539cb5d799",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/LICENSE"
+    },
+    "RULES.md": {
+      "git_blob_sha1": "d26a3835a93e800cc2039723943a250d90a44c20",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/RULES.md"
+    },
+    "CHALLENGE.md": {
+      "git_blob_sha1": "a3cdb147ea780b27fca454239cfee5627c245928",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/CHALLENGE.md"
+    },
+    "DATA.md": {
+      "git_blob_sha1": "6bd2f042c00d06d6391472926ec1bc1a15201a17",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/DATA.md"
+    },
+    "EVALUATION.md": {
+      "git_blob_sha1": "0c281c41787cdbb77b1f8b6aba9403f28cf9c4a2",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/EVALUATION.md"
+    },
+    "SUBMISSION.md": {
+      "git_blob_sha1": "ef703837ba6855dba010704256d7375752a559f5",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/SUBMISSION.md"
+    },
+    "FAQ.md": {
+      "git_blob_sha1": "c45ff9141f2f59e5ec75e7dace55b575b4519878",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/FAQ.md"
+    },
+    "requirements.txt": {
+      "git_blob_sha1": "2f28c247b5bcae982b66d5fc63c41583963558a0",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/requirements.txt"
+    },
+    "games.py": {
+      "git_blob_sha1": "d330dc11b3c54d9c704f0c9df7de111395f9f1d4",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/games.py"
+    },
+    "starter/baseline.py": {
+      "git_blob_sha1": "32369d601823dd4806433ba296786f1e7988cd31",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/starter/baseline.py"
+    },
+    "starter/load_atd.py": {
+      "git_blob_sha1": "e002e6a85add76c9c8d4610c6ecfb0f43c55fa6b",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/starter/load_atd.py"
+    },
+    "starter/load_smart_tagging.py": {
+      "git_blob_sha1": "371148cde187a072d9b76a114815502ce7fcd83d",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/starter/load_smart_tagging.py"
+    },
+    "starter/load_homography.py": {
+      "git_blob_sha1": "e53314c177bb0a6b72e52ad49b89c46011dcb6fa",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/starter/load_homography.py"
+    },
+    "evaluation/possession_metrics.py": {
+      "git_blob_sha1": "767494a053628cbdc81a8e9deaf43ef21cc7e58a",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/evaluation/possession_metrics.py"
+    },
+    "evaluation/run_evaluation.py": {
+      "git_blob_sha1": "16adc82b66ec15c7d4bb1ca86a72eceb7327d45f",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/evaluation/run_evaluation.py"
+    },
+    "evaluation/validate_submission.py": {
+      "git_blob_sha1": "9b25e3fc9f4973f5b58f1d58fd19ef80d34b206b",
+      "url": "https://github.com/metrica-sports/more-than-a-hack-2027/blob/f8f2629ff1e0985f81d7e59d8413678514ee1530/evaluation/validate_submission.py"
+    }
+  }
+}
