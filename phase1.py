@@ -159,7 +159,7 @@ def improve():
     from solution.possession import Config, fill_abstentions, predict
     from solution.tracking import load_tracking
 
-    print("KROK 1: brakujaca pilka i przerwy. Tylko dane syntetyczne.\n", flush=True)
+    print("STEP 1: missing ball and stoppages. Synthetic data only.\n", flush=True)
     source = verify_official()
     run_python(ROOT / "scripts/check_environment.py")
     synthetic = local_path(ROOT, "data/synthetic-step1")
@@ -168,10 +168,10 @@ def improve():
     name, filled_name, decoder_name = "step1_memory_dead", "step1_filled", "segment_decoder"
     variants = (*VARIANTS, name, filled_name, decoder_name)
     out = prepare_outputs("outputs/synthetic-step1", variants, ("comparison.json",))
-    print("1/4 Oficjalne baseline'y na nowym zestawie sztucznych scenariuszy.", flush=True)
+    print("1/4 Official baselines on a new set of synthetic scenarios.", flush=True)
     run_python(OFFICIAL / "starter/baseline.py", "--out", out / "submissions",
                log_path=out / "logs/baseline.log", data_dir=synthetic)
-    print("2/4 Nasza metoda: obserwacje -> pamiec posiadania -> potwierdzanie przerw.", flush=True)
+    print("2/4 Our method: observations -> possession memory -> stoppage confirmation.", flush=True)
     players, ball, teams = load_tracking(local_path(synthetic, METADATA), local_path(synthetic, TRACKING), N_FRAMES)
     config = Config()
     # Inference has no access to GT or scenario definitions.
@@ -185,15 +185,15 @@ def improve():
         with (out / "submissions" / (variant + ".csv")).open("w", encoding="utf-8", newline="\n") as stream:
             stream.write("frame,label\n")
             stream.writelines(f"{i},{label}\n" for i, label in enumerate(values))
-    print("3/4 Walidacja wszystkich plikow.", flush=True)
+    print("3/4 Validating all files.", flush=True)
     for variant in variants:
         rows = validate_csv(out / "submissions" / (variant + ".csv"))
-        print(f"OK: {variant}.csv - {rows} wierszy", flush=True)
-    print("4/4 Ocena oficjalnym scorerem. Referencja wylacznie syntetyczna.", flush=True)
+        print(f"OK: {variant}.csv - {rows} rows", flush=True)
+    print("4/4 Evaluation with the official scorer. Synthetic reference only.", flush=True)
     run_python(OFFICIAL / "evaluation/run_evaluation.py", "--gt", local_path(synthetic, GROUND_TRUTH),
                "--results", out / "submissions", "--out", out / "evaluation",
                "--bootstrap", "0", "--no-detail", log_path=out / "logs/scorer.log", data_dir=synthetic)
-    print(f"\n{'wariant':<24} {'macroF1':>8} {'spellF1':>8} {'F1 dla D':>9} {'X oceniane':>11}", flush=True)
+    print(f"\n{'variant':<24} {'macroF1':>8} {'spellF1':>8} {'F1 for D':>9} {'graded X':>11}", flush=True)
     for variant in variants:
         result = json.loads((out / "evaluation/reports" / (variant + ".json")).read_text(encoding="utf-8"))
         print(f"{variant:<24} {result['macro_f1']:>8.4f} {result['spell_f1_mean']:>8.4f} "
@@ -210,8 +210,8 @@ def improve():
                 "synthetic_input_sha256": data_manifest["sha256"],
                 "submission_sha256": {v + ".csv": sha256(out / "submissions" / (v + ".csv")) for v in variants}}
     (out / "run_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
-    print("\nGotowe: outputs/synthetic-step1/comparison.json i evaluation/scoreboard.csv", flush=True)
-    print("To nie wynik konkursowy. Sprawdz tez trudne przypadki opisane w README.", flush=True)
+    print("\nDone: outputs/synthetic-step1/comparison.json and evaluation/scoreboard.csv", flush=True)
+    print("These are not competition scores. Review the difficult synthetic cases as well.", flush=True)
 
 
 def main():

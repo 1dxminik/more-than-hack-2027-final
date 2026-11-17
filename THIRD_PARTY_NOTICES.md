@@ -1,35 +1,40 @@
-# Źródła i licencje
+# Sources and licenses
 
-Folder `official/` zawiera wybrane, niezmienione publiczne pliki projektu
+The `official/` directory contains selected, unchanged public files from
 [More Than a Hack 2027](https://github.com/metrica-sports/more-than-a-hack-2027).
 
-- Autor: Metrica Sports; copyright 2026–2027.
-- Licencja tych plików: [MIT](official/LICENSE).
-- Wersja: `f8f2629ff1e0985f81d7e59d8413678514ee1530`.
-- Źródło i hash każdego pliku: [official/UPSTREAM.json](official/UPSTREAM.json).
-- Weryfikacja zgodności kopii: `./run.ps1 check`.
+- Author: Metrica Sports; copyright 2026–2027.
+- License for these files: [MIT](official/LICENSE).
+- Version: `f8f2629ff1e0985f81d7e59d8413678514ee1530`.
+- Source and hash of each file: [official/UPSTREAM.json](official/UPSTREAM.json).
+- Integrity check: `./run.ps1 check`.
 
-To wybrany zestaw plików, a nie pełny klon repozytorium. Odnośniki w oryginalnej
-dokumentacji do notebooków, grafik, GT i wyników mogą prowadzić do plików, których
-celowo tu nie pobrano. Lokalne polecenia opisuje główny README.md.
+This is a selection of files, not a full repository clone. Links in the original
+documentation to notebooks, images, ground truth and results may refer to files
+intentionally omitted here. The main README.md documents this repository's commands.
 
-Licencja repozytorium organizatorów nie obejmuje prywatnego pakietu meczowego.
-Nie pobrano żadnego GT ani predykcji organizatorów. Całe wejście demonstracyjne
-powstaje w naszym generatorze z wymyślonych współrzędnych.
+The organiser repository's license does not cover the private match bundle.
+No organiser ground truth or prediction files were downloaded. All demonstration
+input is generated from invented coordinates by our own generator.
 
-Publiczny zbiór IDSSE: Bassek i in., *Scientific Data* 2025,
-[DOI 10.1038/s41597-025-04505-y](https://doi.org/10.1038/s41597-025-04505-y), właściciel danych DFL,
-licencja CC BY 4.0. Pobierany lokalnie przez `scripts/fetch_idsse.py` z lustra
-[pysport/idsse-data](https://huggingface.co/datasets/pysport/idsse-data). Nie jest częścią repozytorium;
-do raportów przeliczamy go na tablice, etykiety H/A/D i zniekształcone warianty.
-Wagi sieci w `weights/tcn_v1/` wytrenowano na zniekształconych meczach IDSSE (CC BY 4.0, uznanie
-autorstwa jak wyżej). Zawierają tylko parametry sieci i średnie/odchylenia cech, bez klatek danych.
-PyTorch (BSD-3-Clause) jest zależnością modelu (`requirements-nn.txt`).
+Public IDSSE dataset: Bassek et al., *Scientific Data* 2025,
+[DOI 10.1038/s41597-025-04505-y](https://doi.org/10.1038/s41597-025-04505-y), data owner DFL,
+CC BY 4.0. `scripts/fetch_idsse.py` downloads it locally from the
+[pysport/idsse-data](https://huggingface.co/datasets/pysport/idsse-data) mirror.
+The dataset is not included in this repository. Local processing produces arrays,
+H/A/D labels and degraded tracking variants for training and evaluation.
+The network weights in `weights/tcn_v1/` were trained on degraded IDSSE matches
+(CC BY 4.0; attribution as above). The checkpoints contain network parameters,
+feature means and standard deviations, configuration and training metadata
+(training, validation and test match IDs, selected epoch and decoder penalty).
+They do not contain frame-level tracking or label arrays.
+PyTorch (BSD-3-Clause) is a model dependency (`requirements-nn.txt`).
 
-Nie skopiowano kodu BallRadar, PathCRF, ligafooty ani football-cv-analytics.
-Licencje ewentualnych przyszłych komponentów należy sprawdzić osobno.
+No code was copied from BallRadar, PathCRF, ligafooty or football-cv-analytics.
+Licenses for any future components must be checked separately.
 
-Zależności środowiska: NumPy (BSD-3-Clause), pandas (BSD-3-Clause),
+Environment dependencies: NumPy (BSD-3-Clause), pandas (BSD-3-Clause),
 python-dateutil (Apache-2.0/BSD-3-Clause), six (MIT), tzdata (Apache-2.0;
-materiał bazy IANA ma własne informacje o prawach). Ich pakiety zachowują własne licencje.
-Nie narzucamy tutaj licencji na przyszły autorski kod zespołu.
+the IANA database material has its own rights notices). These packages retain
+their respective licenses. This notice does not assign a license to the team's
+own code or model weights.

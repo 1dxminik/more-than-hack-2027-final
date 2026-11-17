@@ -8,6 +8,9 @@ competition tracking.
 
 Full description, training data, possession rules and limitations: **[TECHNICAL_REPORT.md](TECHNICAL_REPORT.md)**.
 
+The technical report is the version submitted with the final form. For installation
+and execution, follow the complete commands in this README.
+
 No match data is included in this repository. The README files under `official/`
 are unchanged upstream documentation: their examples refer to the full upstream
 repository, including public GT and baseline CSVs intentionally absent here.

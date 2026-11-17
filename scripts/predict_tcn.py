@@ -3,7 +3,7 @@
 Reads only the two files given on the command line; never searches for data. Prints no
 per-frame content, only the output path and the official validation result.
 
-    python -X utf8 -m scripts.predict_tcn --atd-xml X_tactical_atd.xml --atd-raw X_tactical_atd.txt --out C:\\poza\\projektem\\team.csv
+    python -X utf8 -m scripts.predict_tcn --atd-xml X_tactical_atd.xml --atd-raw X_tactical_atd.txt --out C:\\private-submission\\team.csv
 
 Without --models it uses every weights/tcn_v1/model_*.pt (published, hashes in SHA256SUMS) and averages
 their probabilities.
@@ -35,7 +35,7 @@ def load_models(paths):
     for path in paths:
         saved = torch.load(path, map_location="cpu", weights_only=False)
         if list(saved["names"]) != tf.NAMES:
-            raise SystemExit(f"{path}: model trenowano na innych cechach")
+            raise SystemExit(f"{path}: model was trained with different features")
         c = saved["config"]
         model = tcn_model.MSTCN(len(tf.NAMES), c["channels"], c["layers"], c["stages"], c["dropout"])
         model.load_state_dict(saved["state"])
@@ -62,17 +62,17 @@ def write_csv(path, labels):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--atd-xml", type=Path, required=True, help="Metadane ATD (…_tactical_atd.xml)")
-    parser.add_argument("--atd-raw", type=Path, required=True, help="Surowe ATD (…_tactical_atd.txt)")
-    parser.add_argument("--out", type=Path, required=True, help="Wynikowy CSV frame,label")
+    parser.add_argument("--atd-xml", type=Path, required=True, help="ATD metadata (…_tactical_atd.xml)")
+    parser.add_argument("--atd-raw", type=Path, required=True, help="Raw ATD tracking (…_tactical_atd.txt)")
+    parser.add_argument("--out", type=Path, required=True, help="Output frame,label CSV")
     parser.add_argument("--models", type=Path, nargs="+",
                         default=sorted((ROOT / "weights" / "tcn_v1").glob("model_*.pt")))
-    parser.add_argument("--frames", type=int, default=N_FRAMES, help="Liczba klatek ATD (konkurs: 199319)")
-    parser.add_argument("--penalty", type=float, default=None, help="Kara Viterbiego; domyślnie mediana z modeli")
+    parser.add_argument("--frames", type=int, default=N_FRAMES, help="ATD frame count (competition: 199319)")
+    parser.add_argument("--penalty", type=float, default=None, help="Viterbi penalty; defaults to the median across models")
     parser.add_argument("--threads", type=int, default=4)
     args = parser.parse_args(argv)
     if not args.models:
-        raise SystemExit("Brak modeli: podaj --models albo najpierw uruchom scripts.train_tcn cv")
+        raise SystemExit("No models found: specify --models or first run scripts.train_tcn cv")
 
     import torch
     torch.set_num_threads(args.threads)
@@ -82,7 +82,7 @@ def main(argv=None):
     path, penalty = predict(models, x, args.penalty)
     write_csv(args.out, LABELS[tf.upsample(path, args.frames)])
     validate_csv(args.out, args.frames)
-    print(f"OK: {args.out} ({args.frames} wierszy, {len(models)} modeli, kara {penalty}), walidacja oficjalna przeszła")
+    print(f"OK: {args.out} ({args.frames} rows, {len(models)} models, penalty {penalty}), official validation passed")
 
 
 if __name__ == "__main__":

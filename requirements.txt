@@ -1,4 +1,5 @@
-# Tested locally with Python 3.12.14. Python 3.11+ required for this environment.
+# Reference submission environment: Python 3.12.10 (see README.md).
+# Synthetic checks also passed on Python 3.12.14. Scripts require Python 3.11+.
 numpy==2.3.5
 pandas==3.0.1
 python-dateutil==2.9.0.post0

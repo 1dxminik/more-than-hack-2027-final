@@ -70,7 +70,7 @@ def build_one(job):
     match, seed = job
     out = cache_path(match, seed)
     if out.exists():
-        return f"{match} seed{seed}: jest w cache"
+        return f"{match} seed{seed}: already cached"
     start = time.time()
     folder = DEGRADED / match / f"seed{seed}"
     manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
@@ -95,15 +95,15 @@ def ensure_features(matches, jobs):
     todo = [(m, s) for m in matches for s in SEEDS if not cache_path(m, s).exists()]
     missing = [f"{m}/seed{s}" for m, s in todo if not (DEGRADED / m / f"seed{s}" / "manifest.json").exists()]
     if missing:
-        raise SystemExit("Brak zniekształconych danych: " + ", ".join(missing))
+        raise SystemExit("Missing degraded data: " + ", ".join(missing))
     if not todo:
         return
-    print(f"Liczę cechy dla {len(todo)} zestawów ({jobs} procesy). Robi się to raz.", flush=True)
+    print(f"Computing features for {len(todo)} datasets ({jobs} processes). This is done once.", flush=True)
     start = time.time()
     with Pool(max(1, jobs)) as pool:
         for line in pool.imap_unordered(build_one, todo):
             print("  " + line, flush=True)
-    print(f"Cechy gotowe w {(time.time() - start) / 60:.1f} min.", flush=True)
+    print(f"Features ready in {(time.time() - start) / 60:.1f} min.", flush=True)
 
 
 def load_sets(matches):
@@ -112,7 +112,7 @@ def load_sets(matches):
         for s in SEEDS:
             with np.load(cache_path(m, s)) as z:
                 if int(z["version"]) != FEATURE_VERSION or list(z["names"]) != tf.NAMES:
-                    raise SystemExit(f"Nieaktualny cache {cache_path(m, s)}; usuń katalog {CACHE}.")
+                    raise SystemExit(f"Outdated cache {cache_path(m, s)}; remove directory {CACHE}.")
                 data[m, s] = {k: z[k] for k in ("x", "y", "gt", "base50")}
     return data
 
@@ -192,8 +192,8 @@ def train_fold(args, run, data, name, train, val, test):
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
     n_params = sum(p.numel() for p in model.parameters())
-    run.log(f"{name}: trening {train}, walidacja {val}, test {test}; {n_params} parametrów; "
-            f"wagi klas H/A/D {np.round(weight.numpy(), 2).tolist()}")
+    run.log(f"{name}: training {train}, validation {val}, test {test}; {n_params} parameters; "
+            f"H/A/D class weights {np.round(weight.numpy(), 2).tolist()}")
 
     lengths = {m: len(data[m, 0]["y"]) for m in train}
     best = {"score": -1.0}
@@ -234,8 +234,8 @@ def train_fold(args, run, data, name, train, val, test):
                         "state": copy.deepcopy(model.state_dict())}
         row["seconds_total"] = round(time.time() - start, 1)
         run.append_csv("epochs.csv", row)
-        extra = f", walidacja spellF1 {row['val_spell_f1']} (kara {row['val_penalty']})" if row["val_spell_f1"] != "" else ""
-        run.log(f"{name} epoka {epoch}/{args.epochs}: strata {row['train_loss']}, {row['seconds_total']} s{extra}")
+        extra = f", validation spellF1 {row['val_spell_f1']} (penalty {row['val_penalty']})" if row["val_spell_f1"] != "" else ""
+        run.log(f"{name} epoch {epoch}/{args.epochs}: loss {row['train_loss']}, {row['seconds_total']} s{extra}")
 
     model.load_state_dict(best["state"])
     torch.save({"state": best["state"], "mean": mean, "std": std, "penalty": best["penalty"],
@@ -260,7 +260,7 @@ def train_fold(args, run, data, name, train, val, test):
     (run.folder / f"fold_{name}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     tcn = np.mean([r["spell_f1_mean"] for r in rows if r["method"] == "tcn_viterbi"])
     base = np.mean([r["spell_f1_mean"] for r in rows if r["method"] == "baseline_smooth50"])
-    run.log(f"{name} GOTOWE: test {test} spellF1 TCN+Viterbi {tcn:.4f}, baseline smooth50 {base:.4f}")
+    run.log(f"{name} DONE: test {test} spellF1 TCN+Viterbi {tcn:.4f}, baseline smooth50 {base:.4f}")
     return summary
 
 
@@ -277,12 +277,13 @@ def write_report(run, title, prefix):
         return float(np.mean([r[key] for r in fold["rows"] if r["method"] == method]))
 
     lines = [f"# {title}", "",
-             "Dane: zniekształcone IDSSE (publiczne mecze Bundesligi, CC BY 4.0). "
-             "**To nie jest wynik konkursowy.** Na pełnym meczu różnice spellF1 poniżej ~0,04 to szum.",
-             f"Każdy wynik to średnia z ziaren {list(EVAL_SEEDS)} meczu testowego. "
-             "Szczegóły: wyniki.csv (każde ziarno), epochs.csv (każda epoka), log.txt.", "",
-             "| fold | test | walidacja | epoka | kara | spellF1 TCN+Viterbi | spellF1 TCN bez Viterbiego | "
-             "spellF1 baseline50 | macroF1 TCN | F1 D TCN | posiadania pred/GT |",
+             "Data: degraded IDSSE (public Bundesliga matches, CC BY 4.0). "
+             "**These are not competition scores.**",
+             f"Each result is the mean over seeds {list(EVAL_SEEDS)} of the test match. "
+             "Local training artifacts: wyniki.csv (per seed), epochs.csv (per epoch), log.txt. "
+             "These detailed artifacts are not included in the public submission repository.", "",
+             "| fold | test | validation | epoch | penalty | spellF1 TCN+Viterbi | spellF1 TCN without Viterbi | "
+             "spellF1 baseline50 | macroF1 TCN | F1 D TCN | possessions pred/GT |",
              "|---|---|---|---|---|---|---|---|---|---|---|"]
     for f in folds:
         lines.append(f"| {f['fold']} | {f['test']} | {f['val']} | {f['best_epoch']} | {f['penalty']} | "
@@ -290,8 +291,8 @@ def write_report(run, title, prefix):
                      f"{mean_of(f, 'baseline_smooth50', 'spell_f1_mean'):.4f} | {mean_of(f, 'tcn_viterbi', 'macro_f1'):.4f} | "
                      f"{mean_of(f, 'tcn_viterbi', 'f1_D'):.4f} | "
                      f"{mean_of(f, 'tcn_viterbi', 'n_pred_spells'):.0f}/{mean_of(f, 'tcn_viterbi', 'n_gt_spells'):.0f} |")
-    lines += ["", f"## Średnio po {len(folds)} foldach (± odchylenie standardowe między foldami)", "",
-              "| metoda | " + " | ".join(keys) + " |", "|---|" + "---|" * len(keys)]
+    lines += ["", f"## Mean over {len(folds)} folds (± standard deviation across folds)", "",
+              "| method | " + " | ".join(keys) + " |", "|---|" + "---|" * len(keys)]
     for method in methods:
         cells = []
         for key in keys:
@@ -317,8 +318,8 @@ def configure(args, run, mode):
     if path.exists():
         old = json.loads(path.read_text(encoding="utf-8"))
         if old["train"] != config["train"]:
-            raise SystemExit(f"Przebieg {run.folder.name} istnieje z innymi ustawieniami. Użyj innej nazwy --run.")
-        run.log("Wznawiam istniejący przebieg; ukończone foldy są pomijane.")
+            raise SystemExit(f"Run {run.folder.name} exists with different settings. Use a different --run name.")
+        run.log("Resuming the existing run; completed folds are skipped.")
     else:
         path.write_text(json.dumps(config, indent=2), encoding="utf-8")
 
@@ -333,23 +334,23 @@ def command_cv(args):
     start = time.time()
     for name, train, val, test in plan:
         if (run.folder / f"fold_{name}.json").exists():
-            run.log(f"{name}: już ukończony, pomijam")
+            run.log(f"{name}: already completed, skipping")
             continue
         train_fold(args, run, data, name, train, val, test)
         write_report(run, f"Leave-one-match-out: {args.run}", "fold_cv")
     write_report(run, f"Leave-one-match-out: {args.run}", "fold_cv")
-    run.log(f"Koniec po {(time.time() - start) / 60:.1f} min. Wyniki: {run.folder / 'WYNIKI.md'}")
+    run.log(f"Finished in {(time.time() - start) / 60:.1f} min. Results: {run.folder / 'WYNIKI.md'}")
 
 
 def command_final(args):
     run = Run(OUTPUTS / args.run)
     cv_config = run.folder / "config.json"
     if not cv_config.exists():
-        raise SystemExit("Najpierw uruchom cv z tą samą nazwą --run; final używa jego ustawień.")
+        raise SystemExit("First run cv with the same --run name; final uses its settings.")
     for key, value in json.loads(cv_config.read_text(encoding="utf-8"))["train"].items():
         setattr(args, key, value)
     if (run.folder / "fold_final.json").exists():
-        raise SystemExit("Test końcowy już był uruchomiony dla tego przebiegu. Nie powtarzaj go.")
+        raise SystemExit("The final test has already been executed for this run. Do not repeat it.")
     ensure_features(CV_MATCHES + (LOCKED_TEST,), args.jobs)
     import torch
     torch.set_num_threads(args.threads)
@@ -357,19 +358,19 @@ def command_final(args):
     val = CV_MATCHES[0]
     train = [m for m in CV_MATCHES if m != val]
     train_fold(args, run, data, "final", train, val, LOCKED_TEST)
-    write_report(run, f"Test końcowy na zamkniętym meczu {LOCKED_TEST}: {args.run}", "fold_final")
+    write_report(run, f"Final test on held-out match {LOCKED_TEST}: {args.run}", "fold_final")
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
-    features = sub.add_parser("features", help="Policz cechy dla wszystkich meczów i ziaren (raz)")
+    features = sub.add_parser("features", help="Compute features for all matches and seeds (once)")
     features.add_argument("--jobs", type=int, default=4)
     for name in ("cv", "final"):
         p = sub.add_parser(name)
-        p.add_argument("--run", required=True, help="Nazwa przebiegu: outputs/tcn/<run>/")
+        p.add_argument("--run", required=True, help="Run name: outputs/tcn/<run>/")
         p.add_argument("--threads", type=int, default=4)
-        p.add_argument("--jobs", type=int, default=4, help="Procesy do liczenia brakujących cech")
+        p.add_argument("--jobs", type=int, default=4, help="Processes for computing missing features")
         if name == "cv":
             p.add_argument("--folds", type=int, default=len(CV_MATCHES))
             p.add_argument("--epochs", type=int, default=20)
@@ -380,7 +381,7 @@ def main(argv=None):
             p.add_argument("--dropout", type=float, default=0.3)
             p.add_argument("--lr", type=float, default=1e-3)
             p.add_argument("--weight-decay", type=float, default=1e-4)
-            p.add_argument("--window", type=int, default=2048, help="Długość wycinka w krokach 5 fps")
+            p.add_argument("--window", type=int, default=2048, help="Crop length in 5 fps steps")
             p.add_argument("--batch", type=int, default=4)
             p.add_argument("--crop-factor", type=int, default=2)
             p.add_argument("--smooth", type=float, default=0.15)
